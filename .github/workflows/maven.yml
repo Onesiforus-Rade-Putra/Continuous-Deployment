@@ -40,6 +40,7 @@ jobs:
           path: target/*.jar
 
       - name: Continuous Deployment - deploy to GitHub Packages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: mvn -B deploy -DskipTests --file pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
