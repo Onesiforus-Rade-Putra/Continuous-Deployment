@@ -25,8 +25,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
+          server-id: github
+          settings-path: ${{ github.workspace }}
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
 
@@ -40,7 +40,8 @@ jobs:
           path: target/*.jar
 
       - name: Continuous Deployment - deploy to GitHub Packages
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-        run: mvn -B deploy -DskipTests --file pom.xml
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        run: mvn -B deploy -DskipTests --settings $GITHUB_WORKSPACE/settings.xml --file pom.xml
         env:
+          GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
