@@ -40,7 +40,7 @@ jobs:
           path: target/*.jar
 
       - name: Continuous Deployment - deploy to GitHub Packages
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'pull_request' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: mvn -B deploy -DskipTests --settings $GITHUB_WORKSPACE/settings.xml --file pom.xml
         env:
           GITHUB_ACTOR: ${{ github.actor }}
